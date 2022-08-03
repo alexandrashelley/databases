@@ -8,15 +8,15 @@ If the table is already created in the database, you can skip this step.
 
 Otherwise, [follow this recipe to design and create the SQL schema for your table](./single_table_design_recipe_template.md).
 
-*In this template, we'll use an example table `albums`*
+*In this template, we'll use an example table `artists`*
 
 ```
 # EXAMPLE
 
-Table: albums
+Table: artists
 
 Columns:
-id | title | release_year | artist_id
+id | name | genre
 ```
 
 ## 2. Create Test SQL seeds
@@ -35,19 +35,19 @@ If seed data is provided (or you already created it), you can skip this step.
 -- so we can start with a fresh state.
 -- (RESTART IDENTITY resets the primary key)
 
-TRUNCATE TABLE albums RESTART IDENTITY; -- replace with your own table name.
+TRUNCATE TABLE artists RESTART IDENTITY; -- replace with your own table name.
 
 -- Below this line there should only be `INSERT` statements.
 -- Replace these statements with your own seed data.
 
-INSERT INTO albums (name, cohort_name) VALUES ('David', 'April 2022');
-INSERT INTO albums (name, cohort_name) VALUES ('Anna', 'May 2022');
+INSERT INTO artists (name, genre) VALUES ('Prince', 'Pop');
+INSERT INTO artists (name, genre) VALUES ('Confidence Man', 'Electropop');
 ```
 
 Run this SQL file on the database to truncate (empty) the table, and insert the seed data. Be mindful of the fact any existing records in the table will be deleted.
 
 ```bash
-psql -h 127.0.0.1 your_database_name < seeds_{table_name}.sql
+psql -h 127.0.0.1 music_library_test < seeds_artists.sql
 ```
 
 ## 3. Define the class names
@@ -56,16 +56,16 @@ Usually, the Model class name will be the capitalised table name (single instead
 
 ```ruby
 # EXAMPLE
-# Table name: albums
+# Table name: artists
 
 # Model class
-# (in lib/album.rb)
-class Album
+# (in lib/artist.rb)
+class Artists
 end
 
 # Repository class
-# (in lib/album_repository.rb)
-class AlbumRepository
+# (in lib/artist_repository.rb)
+class Artistepository
 end
 ```
 
@@ -75,15 +75,15 @@ Define the attributes of your Model class. You can usually map the table columns
 
 ```ruby
 # EXAMPLE
-# Table name: albums
+# Table name: artists
 
 # Model class
-# (in lib/album.rb)
+# (in lib/artist.rb)
 
-class Album
+class Artist
 
   # Replace the attributes by your own columns.
-  attr_accessor :id, :title, :release_year, :artist_id
+  attr_accessor :id, :name, :genre
 end
 
 # The keyword attr_accessor is a special Ruby feature
@@ -105,27 +105,27 @@ Using comments, define the method signatures (arguments and return value) and wh
 
 ```ruby
 # EXAMPLE
-# Table name: albums
+# Table name: artists
 
 # Repository class
-# (in lib/album_repository.rb)
+# (in lib/artist_repository.rb)
 
-class AlbumRepository
+class Artistepository
 
   # Selecting all records
   # No arguments
   def all
     # Executes the SQL query:
-    # SELECT * FROM albums;
+    # SELECT * FROM artists;
 
-    # Returns an array of Album objects.
+    # Returns an array of Artist objects.
   end
 
   def find(id)
     # Executes the SQL query:
     # SELECT * FROM albums WHERE id = $1;
 
-    # Returns an Album object 
+    # Returns an Artist object 
   end
 end
 ```
@@ -140,35 +140,32 @@ These examples will later be encoded as RSpec tests.
 # EXAMPLES
 
 # 1
-# Get all albums
+# Get all artists
 
 repo = AlbumRepository.new
 
-albums = repo.all
+artists = repo.all
 
-albums.length # =>  2
+artists.length # =>  2
 
-albums.first.id # =>  1
-albums.first.title # =>  'Motomami'
-albums.first.release_year # =>  '2022'
-albums.first.artist_id # =>  '1'
+artists.first.id # =>  1
+artists.first.name # =>  'Prince'
+artists.first.genre # =>  'Pop'
 
-albums.last.id # =>  2
-albums.last.title # =>  'In Colour'
-albums.last.release_year # =>  '2022'
-albums.last.artist_id # =>  '2'
+artists.last.id # =>  2
+artists.first.name # =>  'Confidence Man'
+artists.first.genre # =>  'Electropop'
 
 # 2
-# Find one album for a given id 
+# Find one artist for a given id 
 
-repo = AlbumRepository.new
+repo = ArtistRepository.new
 
-album = repo.find('1')
+artist = repo.find('1')
 
-album.id # => '1'
-album.title # => 'Motomami'
-album.release_year # =>  '2022'
-album.artist_id # => '1'
+artist.id # => '1'
+artist.name # => 'Prince'
+artist.genre # =>  'Pop'
 ```
 
 Encode this example as a test.
@@ -182,7 +179,7 @@ This is so you get a fresh table contents every time you run the test suite.
 ```ruby
 # EXAMPLE
 
-# file: spec/albums_repository_spec.rb
+# file: spec/artist_repository_spec.rb
 
 def reset_albums_table
   seed_sql = File.read('spec/seeds_albums.sql')

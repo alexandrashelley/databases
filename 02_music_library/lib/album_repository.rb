@@ -7,12 +7,12 @@ class AlbumRepository
 
     albums = []
 
-    result_set.each do |row|
+    result_set.each do |column|
       album = Album.new
-      album.id = row['id']
-      album.title = row['title']
-      album.release_year = row['release_year']
-      album.artist_id = row['artist_id']
+      album.id = column['id']
+      album.title = column['title']
+      album.release_year = column['release_year']
+      album.artist_id = column['artist_id']
 
       albums << album
     end
@@ -28,12 +28,12 @@ class AlbumRepository
     
     an_album = []
 
-    result_set.each do |row|
+    result_set.each do |column|
       album = Album.new     # this is calling a new album object, then assigning lines 32-35 to it
-      album.id = row['id']
-      album.title = row['title']
-      album.release_year = row['release_year']
-      album.artist_id = row['artist_id']
+      album.id = column['id']
+      album.title = column['title']
+      album.release_year = column['release_year']
+      album.artist_id = column['artist_id']
 
       an_album << album
     end

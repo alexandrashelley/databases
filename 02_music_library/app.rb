@@ -15,6 +15,10 @@ artist_repository.all.each do |artist|
   p artist
 end
 
-album_repository.find(2).each do |album| 
+album_repository.find('2').each do |album| 
   p album.title
+end
+
+artist_repository.find('1').each do |artist|
+  p artist.name
 end
